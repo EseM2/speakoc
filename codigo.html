@@ -23,7 +23,7 @@
         }
         @keyframes speak {
             0% { content: url("https://raw.githubusercontent.com/esem2/speakoc/main/imgs/img3.png"); }
-            50% { content: url("imgs/img2.png"); }
+            50% { content: url("https://raw.githubusercontent.com/esem2/speakoc/main/imgs/img2.png"); }
         }
         #tts-audio {
             display: none;
@@ -32,7 +32,7 @@
 </head>
 <body>
 
-    <img id="character" src="imgs/img2.png" alt="Personaje">
+    <img id="character" src="https://raw.githubusercontent.com/esem2/speakoc/main/imgs/img2.png" alt="Personaje">
     <audio id="tts-audio"></audio>
 
     <script>
@@ -73,7 +73,7 @@
             audio.onended = () => {
                 // Detener la animación y mostrar solo la imagen estática al finalizar
                 character.classList.remove('speaking');
-                character.src = "imgs/img2.png";
+                character.src = "https://raw.githubusercontent.com/esem2/speakoc/main/imgs/img2.png";
                 setTimeout(() => exitCharacter(), 1000); // Sale después de un segundo
             };
         }
