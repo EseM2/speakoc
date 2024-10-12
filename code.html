@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personaje TTS</title>
+    <style>
+        body {
+            background-color: transparent;
+            margin: 0;
+            overflow: hidden;
+        }
+        #character {
+            position: absolute;
+            bottom: 100%; /* Empieza fuera de la pantalla */
+            left: 50%;
+            transform: translateX(-50%);
+            display: block;
+            transition: bottom 1s ease-in-out;
+        }
+        .speaking {
+            animation: speak 0.3s steps(2) infinite;
+        }
+        @keyframes speak {
+            0% { content: url("https://github.com/tu_usuario/repositorio/blob/main/personaje_boca_abierta.png"); }
+            50% { content: url("https://github.com/tu_usuario/repositorio/blob/main/personaje_boca_cerrada.png"); }
+        }
+        #tts-audio {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <img id="character" src="https://github.com/tu_usuario/repositorio/blob/main/personaje_boca_cerrada.png" alt="Personaje">
+    <audio id="tts-audio"></audio>
+
+    <script>
+        const character = document.getElementById('character');
+        const audio = document.getElementById('tts-audio');
+        let triggerFile = "trigger.txt"; // Archivo de activación
+
+        // Función para mostrar el personaje deslizándose hacia abajo
+        function enterCharacter() {
+            character.style.bottom = '10%'; // Ajusta esta posición según tu preferencia
+        }
+
+        // Función para ocultar el personaje deslizándose hacia arriba
+        function exitCharacter() {
+            character.style.bottom = '100%'; // Se desliza fuera de la pantalla
+        }
+
+        // Función para revisar el trigger
+        function checkTrigger() {
+            fetch(triggerFile + '?_=' + new Date().getTime()) // Agrega timestamp para evitar cacheo
+                .then(response => response.text())
+                .then(trigger => {
+                    if (trigger.trim() === "speak") {
+                        enterCharacter();
+                        setTimeout(() => startSpeaking(), 1000); // Comienza a hablar después de la transición
+                        fetch(triggerFile, {method: 'POST'}); // Reinicia el trigger
+                    }
+                });
+        }
+
+        // Función que alterna las imágenes mientras habla
+        function startSpeaking() {
+            // Cambia la imagen del personaje a la versión animada y reproducir el TTS
+            character.classList.add('speaking');
+            audio.src = "tts.mp3";  // Ruta del archivo TTS generado
+            audio.play();
+
+            audio.onended = () => {
+                // Detener la animación y mostrar solo la imagen estática al finalizar
+                character.classList.remove('speaking');
+                character.src = "https://github.com/tu_usuario/repositorio/blob/main/personaje_boca_cerrada.png";
+                setTimeout(() => exitCharacter(), 1000); // Sale después de un segundo
+            };
+        }
+
+        setInterval(checkTrigger, 1000); // Verifica el trigger cada segundo
+    </script>
+</body>
+</html>
